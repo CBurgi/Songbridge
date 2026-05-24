@@ -1,31 +1,30 @@
 import { serve } from "bun";
 import index from "./index.html";
+import { getToken } from "./functions/tokenStore";
+import { Platforms } from "./functions/objects";
+import SpotifyApi from "./functions/spotify-api";
+import AbstractApi from "./functions/abstract-api";
 
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
-    "/*": index,
+    "/": index,
 
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
+    "/api/getSongs": {
+      POST: async (req) => {
+        const body = await req.json();
+        let result = {};
+        if (body.url) {
 
-    "/api/hello/:name": async req => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
+        } else {
+        }
+        // return Response.json({...result, ...body});
+        const api = new SpotifyApi();
+        const id = api.ParseUrlForID('https://open.spotify.com/track/3aTtbSM7gX011qAtinh6nP');
+        api.GetSongByID(id);
+
+        return Response.json({})
+      }
     },
   },
 
