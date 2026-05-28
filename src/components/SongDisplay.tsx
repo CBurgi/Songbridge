@@ -1,3 +1,6 @@
+import { states } from "@/functions/objects";
+import { useState } from "react";
+
 type DisplayProps = {
   song: string;
   artist: string;

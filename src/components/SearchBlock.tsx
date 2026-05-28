@@ -1,26 +1,44 @@
-import { useState, useRef } from 'react';
+import { states, type SongData } from '@/functions/objects';
+import { useState, useRef, type SetStateAction } from 'react';
 
-export default function SearchBlock() {
-  const [querySong, setQuerySong] = useState('');
-  const [queryArtist, setQueryArtist] = useState('');
+type SearchBlockParams = {
+  setState: React.Dispatch<SetStateAction<number>>;
+  setResult: React.Dispatch<SetStateAction<any[]>>;
+}
+export default function SearchBlock({
+  setState,
+  setResult,
+}: SearchBlockParams) {
+  const [queryName, setQueryName] = useState('');
+  const [queryArtists, setQueryArtists] = useState('');
   const [queryAlbum, setQueryAlbum] = useState('');
   const [queryURL, setQueryURL] = useState('');
 
+  function parseQueryArtists(artists: string): Array<string> {
+    const artistArray = artists.split(/[,&]/).map((a) => a.trim())
+    return artistArray
+  }
+
   const submitForm = async () => {
     try {
-    const url = new URL("/api/getSongs", location.href);
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        song: querySong,
-        artist: queryArtist,
-        album: queryAlbum,
-        url: queryURL,
-      })
-    });
+      const url = new URL("/api/getSongs", location.href);
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          name: queryName,
+          artists: parseQueryArtists(queryArtists),
+          album: queryAlbum,
+          url: queryURL,
+        })
+      });
 
-    const data = await response.json();
-    console.log(JSON.stringify(data));
+      const songs: SongData[] = await response.json();
+      if (songs.length > 0) {
+        setResult(songs)
+        setState(songs.length > 1 ? states.searched : states.selected)
+      } else {
+        setState(states.not_found)
+      }
     } catch (error) {
       console.log(String(error));
     }
@@ -38,14 +56,14 @@ export default function SearchBlock() {
           <div className="max-w-sm w-full space-y-3">
             <div className="relative">
               <input
-                id="song-input"
+                id="name-input"
                 className="peer p-4 block w-full bg-layer border-layer-line rounded-lg sm:text-md text-foreground placeholder:text-transparent focus:border-primary-focus focus:ring-primary-focus disabled:opacity-50 disabled:pointer-events-none focus:pt-6 focus:pb-2 not-placeholder-shown:pt-6 not-placeholder-shown:pb-2 autofill:pt-6 autofill:pb-2"
-                placeholder="song"
-                value={querySong}
-                onChange={(e) => setQuerySong(e.target.value)}
+                placeholder="name"
+                value={queryName}
+                onChange={(e) => setQueryName(e.target.value)}
               />
               <label
-                htmlFor="song-input"
+                htmlFor="name-input"
                 className="absolute top-0 inset-s-0 p-4 h-full sm:text-md truncate pointer-events-none transition ease-in-out duration-100 border border-transparent text-foreground origin-top-left peer-disabled:opacity-50 peer-disabled:pointer-events-none peer-focus:scale-80 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-muted-foreground-1 peer-not-placeholder-shown:scale-90 peer-not-placeholder-shown:translate-x-0.5 peer-not-placeholder-shown:-translate-y-1.5 peer-not-placeholder-shown:text-muted-foreground-1"
               >
                 Song
@@ -55,9 +73,9 @@ export default function SearchBlock() {
               <input
                 id="artist-input"
                 className="peer p-4 block w-full bg-layer border-layer-line rounded-lg sm:text-md text-foreground placeholder:text-transparent focus:border-primary-focus focus:ring-primary-focus disabled:opacity-50 disabled:pointer-events-none focus:pt-6 focus:pb-2 not-placeholder-shown:pt-6 not-placeholder-shown:pb-2 autofill:pt-6 autofill:pb-2"
-                placeholder="artist"
-                value={queryArtist}
-                onChange={(e) => setQueryArtist(e.target.value)}
+                placeholder="artists"
+                value={queryArtists}
+                onChange={(e) => setQueryArtists(e.target.value)}
               />
               <label
                 htmlFor="artist-input"
