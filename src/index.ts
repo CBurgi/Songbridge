@@ -13,17 +13,25 @@ const server = serve({
     "/api/getSongs": {
       POST: async (req) => {
         const body = await req.json();
+        console.log('Request:')
+        console.log(body);
+        
+
         let result = {};
-        if (body.url) {
-
-        } else {
-        }
-        // return Response.json({...result, ...body});
         const api = new SpotifyApi();
+        if (body.url) {
+        console.log('Requesting via URL...')
         const id = api.ParseUrlForID('https://open.spotify.com/track/3aTtbSM7gX011qAtinh6nP');
-        api.GetSongByID(id);
+        result = await api.GetSongByID(id);
+        } else {
+          console.log('Requesting via Search...')
+          result = await api.SearchSong(body.name, body.artists, body.album)
+        }
 
-        return Response.json({})
+        console.log('Response: ');
+        console.log(result);
+        
+        return Response.json(result)
       }
     },
   },

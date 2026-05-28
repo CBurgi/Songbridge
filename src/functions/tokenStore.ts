@@ -40,13 +40,13 @@ export async function getToken(platform: string): Promise<string | boolean> {
   const now = Date.now();
   if (b.token && b.expiry - TOKEN_MARGIN_MS > now) return b.token;
 
-  if (b.refreshing) {
-    await b.refreshing;
-    return b.token;
+  if (!b.refreshing) {
+    b.refreshing = refreshToken(platform).finally(() => { b.refreshing = null; });
   }
 
-  b.refreshing = refreshToken(platform).finally(() => { b.refreshing = null; });
   await b.refreshing;
+  console.log(b.token);
+  
   return b.token;
 }
 

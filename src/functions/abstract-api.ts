@@ -1,4 +1,5 @@
 import type { SongData } from "./objects";
+import { getToken } from "./tokenStore";
 
 export default abstract class AbstractApi {
   abstract platform: string;
@@ -8,9 +9,24 @@ export default abstract class AbstractApi {
 
   constructor(){}
 
+  async APIGET(url: URL): Promise<any> {
+    const token = await getToken(this.platform); 
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(this.platform + ' API error: ' + res.status);
+
+    const json = await res.json();
+    return json;
+  }
+
+  abstract ParseSong(song: object): SongData;
+
   abstract ParseUrlForID(url: string): string;
 
-  abstract GetSongByID(id: string): Promise<SongData>;
+  abstract GetSongByID(id: string): Promise<SongData[]>;
 
-  abstract Search(name: string, artist: string, album: string): Promise<Array<SongData>>;
+  abstract SearchSong(name: string, artists: Array<string>, album: string): Promise<Array<SongData>>;
 }

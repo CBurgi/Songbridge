@@ -12,30 +12,49 @@ export default class SpotifyApi extends AbstractApi {
 
   constructor(){super();}
 
+  override ParseSong(song: any): SongData {
+    const parsed: SongData = structuredClone(EmptySongData);
+
+    parsed.name = song.name ?? '';
+    parsed.artists = song.artists?.map((a: any) => a.name) ?? [];
+    parsed.album = song.album.name ?? '';
+    parsed.albumArtURL = song.album.images.find((a: any) => a.height === 640).url;
+    parsed.release = new Date(song.album.release_date);
+    parsed.extURL = song.external_urls.spotify;
+    parsed.isrc = song.external_ids.isrc;
+
+    return parsed;
+  }
+
   override ParseUrlForID(url: string): string {
     const idArray = url.match(this.idRegex) ?? [""];
 
     return idArray[0];
   }
 
-  override async GetSongByID(id: string) {
-    const token = await getToken(this.platform); 
-
+  override async GetSongByID(id: string): Promise<SongData[]> {
     const url = new URL(`/v1/tracks/${id}`, this.apiURL);
-    const res = await fetch(url, {
-      method: 'GET',
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error('Spotify API error: ' + res.status);
+    const res = await this.APIGET(url);
 
-    const json = await res.json();
-    console.log(json);
-    
+    const parsedSong = this.ParseSong(res);
 
-    return EmptySongData;
+    return [parsedSong];
   }
 
-  override async Search(name: string, artist: string, album: string) {
-    return [EmptySongData]
+  override async SearchSong(name: string, artists: Array<string>, album: string): Promise<SongData[]> {
+    const nameString = name ? `track:${name}` : ''
+    const artistString = artists.map((a) => { return a ? `artist:${a}` : ''}).join(' ')
+    const albumString = album ? `album:${album}` : ''
+    const query = [nameString, artistString, albumString].join(' ')
+    const path = `/v1/search?type=track&q=${query}`
+
+    const url = new URL(path, this.apiURL);
+    console.log(url);
+    
+    const res = await this.APIGET(url);
+
+    const parsedSongs = res.tracks.items.map((t: any) => this.ParseSong(t));
+
+    return parsedSongs
   }
 }
