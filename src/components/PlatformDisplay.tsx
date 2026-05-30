@@ -5,9 +5,11 @@ type DisplayProps = {
   song: string;
   artist: string;
   album: string;
-  img_link: string;
+  platform: string;
 };
-export default function SongDisplay({ song, artist, album, img_link }: DisplayProps) {
+export default function PlatformDisplay({ song, artist, album, platform }: DisplayProps) {
+  const img_link = ""
+
   return (
 
     <div className="
@@ -31,8 +33,8 @@ export default function SongDisplay({ song, artist, album, img_link }: DisplayPr
               <img
                 className="size-24 shadow-xl rounded-lg"
                 alt={`Album art for ${album}`}
-                src={img_link} /
-              >
+                src={img_link}
+              />
             </div>
             <div className="grid">
               <span className="text-xl font-medium">{song}</span>

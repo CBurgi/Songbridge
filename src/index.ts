@@ -4,6 +4,7 @@ import { getToken } from "./functions/tokenStore";
 import { Platforms } from "./functions/objects";
 import SpotifyApi from "./functions/spotify-api";
 import AbstractApi from "./functions/abstract-api";
+import YouTubeApi from "./functions/youtube-api";
 
 const server = serve({
   routes: {
@@ -15,14 +16,16 @@ const server = serve({
         const body = await req.json();
         console.log('Request:')
         console.log(body);
-        
+
+        const api = new YouTubeApi();
+        // const api = new SpotifyApi();
 
         let result = {};
-        const api = new SpotifyApi();
+        result = await api.SearchSong(body.name, body.artists, body.album)
         if (body.url) {
-        console.log('Requesting via URL...')
-        const id = api.ParseUrlForID('https://open.spotify.com/track/3aTtbSM7gX011qAtinh6nP');
-        result = await api.GetSongByID(id);
+          console.log('Requesting via URL...')
+          const id = api.ParseUrlForID(body.url);
+          result = await api.GetSongByID(id);
         } else {
           console.log('Requesting via Search...')
           result = await api.SearchSong(body.name, body.artists, body.album)
@@ -30,7 +33,7 @@ const server = serve({
 
         console.log('Response: ');
         console.log(result);
-        
+
         return Response.json(result)
       }
     },

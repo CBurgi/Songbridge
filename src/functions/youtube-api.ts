@@ -1,21 +1,27 @@
 import AbstractApi from "./abstract-api";
 import type { SongData } from "./objects";
 import { EmptySongData } from "./objects";
-import { getToken } from "./tokenStore";
 import { Platforms } from "./objects";
+import YTMusic from "ytmusic-api";
 
-export default class SpotifyApi extends AbstractApi {
-  override platform = Platforms.spotify;
-  override idRegex = /[\w\d]{22}/;
-  override platformURL = "open.spotify.com";
-  override apiURL = "https://api.spotify.com";
+const api = new YTMusic();
 
-  constructor(){super();}
+export default class YouTubeApi extends AbstractApi {
+  override platform = Platforms.youtube;
+  override idRegex = /[\w\d]{11}/;
+  override platformURL = "youtube.com";
+  override apiURL = "";
+
+  musicSpecifcURL: string = "music.youtube.com/watch?v="
+
+  constructor() {
+    super();
+  }
 
   override ParseSong(song: any): SongData {
     const parsed: SongData = structuredClone(EmptySongData);
-      
-    const albumArt: any[] = song.album.images;
+
+    const albumArt: any[] = song.thumbnails;
     const maxQualityArt: any = albumArt.reduce((p, c) => {
       return (p && p.height > c.height) ? p : c
     })
@@ -24,10 +30,10 @@ export default class SpotifyApi extends AbstractApi {
     parsed.artists = song.artists?.map((a: any) => a.name) ?? [];
     parsed.album = song.album.name ?? '';
     parsed.albumArtURL = maxQualityArt.url;
-    parsed.release = new Date(song.album.release_date);
-    parsed.extURL = song.external_urls.spotify;
-    parsed.isrc = song.external_ids.isrc;
-    parsed.platforms = [Platforms.spotify];
+    parsed.release = new Date(0);
+    parsed.extURL = this.musicSpecifcURL + song.videoId;
+    parsed.isrc = '';
+    parsed.platforms = [Platforms.youtube];
 
     return parsed;
   }
@@ -39,8 +45,10 @@ export default class SpotifyApi extends AbstractApi {
   }
 
   override async GetSongByID(id: string): Promise<SongData[]> {
-    const url = new URL(`/v1/tracks/${id}`, this.apiURL);
-    const res = await this.APIGET(url);
+    await api.initialize()
+    const res = await api.searchSongs(id).then((r) => {
+      return r[0]
+    });
 
     const parsedSong = this.ParseSong(res);
 
@@ -48,17 +56,17 @@ export default class SpotifyApi extends AbstractApi {
   }
 
   override async SearchSong(name: string, artists: Array<string>, album: string): Promise<SongData[]> {
-    const nameString = name ? `track:${name}` : ''
-    const artistString = artists.map((a) => { return a ? `artist:${a}` : ''}).join(' ')
-    const albumString = album ? `album:${album}` : ''
+    const nameString = name ?? ''
+    const artistString = artists.map((a) => { return a ? a : '' }).join(', ')
+    const albumString = album ?? ''
     const query = [nameString, artistString, albumString].join(' ')
-    const path = `/v1/search?type=track&limit=7&q=${query}`
 
-    const url = new URL(path, this.apiURL);
-    
-    const res = await this.APIGET(url);
+    await api.initialize()
+    const res = await api.searchSongs(query).then((r) => {
+      return r.slice(0, 5)
+    })
 
-    const parsedSongs = res.tracks.items.map((t: any) => this.ParseSong(t));
+    const parsedSongs = res.map((t: any) => this.ParseSong(t));
 
     return parsedSongs
   }
