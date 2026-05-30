@@ -6,8 +6,9 @@ export interface SongData {
   albumArtURL: string;
   extURL: string;
   isrc: string;
+  platforms: string[];
 }
-export const EmptySongData: SongData = {
+export const EmptySongData: SongData = Object.freeze({
   name: "",
   artists: [],
   album: "",
@@ -15,13 +16,16 @@ export const EmptySongData: SongData = {
   release: new Date(0),
   extURL: "",
   isrc: "",
-}
+  platforms: [],
+})
 
 interface PlatformsObj {
   spotify: string;
+  youtube: string;
 }
 export const Platforms: PlatformsObj = Object.freeze({
   spotify: "spotify",
+  youtube: "youtube",
 })
   
 interface StatesObj {

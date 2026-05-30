@@ -20,7 +20,8 @@
     "react": "^19",
     "react-dom": "^19",
     "react-router-dom": "^7.15.1",
-    "tailwindcss": "^4.3.0"
+    "tailwindcss": "^4.3.0",
+    "ytmusic-api": "https://github.com/CBurgi/ts-npm-ytmusic-api.git"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.11",
@@ -29,5 +30,9 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.5.0",
     "postcss": "^8.5.15"
+  },
+  "module": "src/index.ts",
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

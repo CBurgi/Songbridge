@@ -53,7 +53,10 @@ export default function SearchBlock({
     ">
       <div className="flex flex-col bg-card border border-card-line shadow-2xs rounded-xl">
         <div className="p-4  ">
-          <div className="max-w-sm w-full space-y-3">
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            submitForm();
+          }} className="max-w-sm w-full space-y-3">
             <div className="relative">
               <input
                 id="name-input"
@@ -117,14 +120,13 @@ export default function SearchBlock({
             </div>
             <div className="inline-flex flex-wrap gap-2">
               <button
-                type="button"
+                type="submit"
                 className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-primary border border-primary-line text-primary-foreground hover:bg-primary-hover focus:outline-hidden focus:bg-primary-focus  disabled:opacity-50 disabled:pointer-events-none"
-                onClick={submitForm}
               >
                 Search
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

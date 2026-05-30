@@ -12,6 +12,7 @@ export default abstract class AbstractApi {
   async APIGET(url: URL): Promise<any> {
     const token = await getToken(this.platform); 
 
+    console.log(url.href)
     const res = await fetch(url, {
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` }
@@ -19,6 +20,7 @@ export default abstract class AbstractApi {
     if (!res.ok) throw new Error(this.platform + ' API error: ' + res.status);
 
     const json = await res.json();
+    console.log(json);
     return json;
   }
 
