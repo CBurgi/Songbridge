@@ -1,6 +1,5 @@
 import AbstractApi from "./abstract-api";
-import type { SongData } from "./objects";
-import { EmptySongData } from "./objects";
+import { SongData, EmptySongData } from "./objects";
 import { Platforms } from "./objects";
 import YTMusic from "ytmusic-api";
 
@@ -21,19 +20,17 @@ export default class YouTubeApi extends AbstractApi {
   override ParseSong(song: any): SongData {
     const parsed: SongData = structuredClone(EmptySongData);
 
-    const albumArt: any[] = song.thumbnails;
-    const maxQualityArt: any = albumArt.reduce((p, c) => {
-      return (p && p.height > c.height) ? p : c
-    })
+    const albumArtURL = this.GetAlbumArtURL(song.thumbnails);
 
-    parsed.name = song.name ?? '';
-    parsed.artists = song.artists?.map((a: any) => a.name) ?? [];
-    parsed.album = song.album.name ?? '';
-    parsed.albumArtURL = maxQualityArt.url;
+    parsed.songItem.name = song.name ?? '';
+    parsed.songItem.artists = song.artists?.map((a: any) => a.name) ?? [];
+    parsed.songItem.album = song.album.name ?? '';
+    parsed.albumArtURL = albumArtURL;
     parsed.release = new Date(0);
-    parsed.extURL = this.musicSpecifcURL + song.videoId;
-    parsed.isrc = '';
-    parsed.platforms = [Platforms.youtube];
+    parsed.extURLs = [{
+      platform: this.platform,
+      URL: this.musicSpecifcURL + song.videoId
+    }];
 
     return parsed;
   }
@@ -44,7 +41,7 @@ export default class YouTubeApi extends AbstractApi {
     return idArray[0];
   }
 
-  override async GetSongByID(id: string): Promise<SongData[]> {
+  override async GetSongByID(id: string): Promise<SongData> {
     await api.initialize()
     const res = await api.searchSongs(id).then((r) => {
       return r[0]
@@ -52,7 +49,7 @@ export default class YouTubeApi extends AbstractApi {
 
     const parsedSong = this.ParseSong(res);
 
-    return [parsedSong];
+    return parsedSong;
   }
 
   override async SearchSong(name: string, artists: Array<string>, album: string): Promise<SongData[]> {

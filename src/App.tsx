@@ -20,10 +20,10 @@ export function App() {
   return (
     <div>
       <span className="font-sans font-bold text-lg">Songbridge</span>
-      <br/>
+      <br />
       <span className="font-sans font-bold text-lg">{state}</span>
-      
-      < SearchBlock
+
+      <SearchBlock
         setState={setState}
         setResult={setResult}
       />
@@ -35,10 +35,7 @@ export function App() {
             {
               result.map((r: SongData) => (
                 <SongDisplay
-                  song={r.name}
-                  artist={r.artists.join(', ')}
-                  album={r.album}
-                  img_link={r.albumArtURL}
+                  song={r}
                 />
               ))
             }

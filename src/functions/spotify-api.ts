@@ -1,7 +1,5 @@
 import AbstractApi from "./abstract-api";
-import type { SongData } from "./objects";
-import { EmptySongData } from "./objects";
-import { getToken } from "./tokenStore";
+import { SongData, EmptySongData } from "./objects";
 import { Platforms } from "./objects";
 
 export default class SpotifyApi extends AbstractApi {
@@ -15,19 +13,18 @@ export default class SpotifyApi extends AbstractApi {
   override ParseSong(song: any): SongData {
     const parsed: SongData = structuredClone(EmptySongData);
       
-    const albumArt: any[] = song.album.images;
-    const maxQualityArt: any = albumArt.reduce((p, c) => {
-      return (p && p.height > c.height) ? p : c
-    })
+    const albumArtURL = this.GetAlbumArtURL(song.album.images);
 
-    parsed.name = song.name ?? '';
-    parsed.artists = song.artists?.map((a: any) => a.name) ?? [];
-    parsed.album = song.album.name ?? '';
-    parsed.albumArtURL = maxQualityArt.url;
+    parsed.songItem.name = song.name ?? '';
+    parsed.songItem.artists = song.artists?.map((a: any) => a.name) ?? [];
+    parsed.songItem.album = song.album.name ?? '';
+    parsed.albumArtURL = albumArtURL;
     parsed.release = new Date(song.album.release_date);
-    parsed.extURL = song.external_urls.spotify;
+    parsed.extURLs = [{
+      platform: this.platform,
+      URL: song.external_urls.spotify
+    }]
     parsed.isrc = song.external_ids.isrc;
-    parsed.platforms = [Platforms.spotify];
 
     return parsed;
   }
@@ -38,13 +35,13 @@ export default class SpotifyApi extends AbstractApi {
     return idArray[0];
   }
 
-  override async GetSongByID(id: string): Promise<SongData[]> {
+  override async GetSongByID(id: string): Promise<SongData> {
     const url = new URL(`/v1/tracks/${id}`, this.apiURL);
     const res = await this.APIGET(url);
 
     const parsedSong = this.ParseSong(res);
 
-    return [parsedSong];
+    return parsedSong;
   }
 
   override async SearchSong(name: string, artists: Array<string>, album: string): Promise<SongData[]> {
