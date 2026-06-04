@@ -41,12 +41,14 @@ export const Platforms: PlatformsObj = Object.freeze({
 interface StatesObj {
   not_found: number;
   unsearched: number;
+  searching: number;
   searched: number;
   selected: number;
 }
 export const states: StatesObj = Object.freeze({
   not_found: -1,
   unsearched: 0,
-  searched: 1,
-  selected: 2,
+  searching: 1,
+  searched: 2,
+  selected: 3,
 })
