@@ -59,7 +59,7 @@ async function GetSongByURL(URL: string): Promise<SongData[] | []> {
 
       res.forEach((song) => {
         if (
-          targetSong.songItem === song.songItem
+          _.isEqual(targetSong.songItem, song.songItem)
           && song.extURLs[0]
         ) {
           targetSong.extURLs.push(song.extURLs[0])
@@ -106,7 +106,8 @@ const server = serve({
         const result = await GetSongByURL(body.url);
 
         console.log('Response: ');
-        console.log(result);
+        result.forEach((r) => console.log(r))
+        // console.log(result);
 
         return Response.json(result)
       },
