@@ -74,37 +74,45 @@ async function GetSongByURL(URL: string): Promise<SongData[] | []> {
 }
 
 const server = serve({
-    async fetch(req) {
-      const filePath = "./public" + new URL(req.url).pathname
-      const file = Bun.file(filePath)
-      return new Response(file)
+  routes: {
+    "/images/*": {
+      GET: async (req) => {
+        const filePath = "./public" + new URL(req.url).pathname
+        const file = Bun.file(filePath)
+        return new Response(file)
+      }
     },
 
-  routes: {
-    // Serve index.html for all unmatched routes.
-    "/": index,
-
-    "/api/getSongs": {
+    "/api/searchSongs": {
       POST: async (req) => {
         const body = await req.json();
-        console.log('Request:')
+        console.log('searchSongs request:')
         console.log(body);
 
-        let result = {};
-        if (body.url) {
-          console.log('Requesting via URL...')
-          result = await GetSongByURL(body.url);
-        } else {
-          console.log('Requesting via Search...')
-          result = await SearchSongs(body.name, body.artists, body.album)
-        }
+        const result = await SearchSongs(body.name, body.artists, body.album)
 
         console.log('Response: ');
         console.log(result);
 
         return Response.json(result)
-      }
+      },
     },
+    "/api/getSong": {
+      POST: async (req) => {
+        const body = await req.json();
+        console.log('getSong request:')
+        console.log(body);
+
+        const result = await GetSongByURL(body.url);
+
+        console.log('Response: ');
+        console.log(result);
+
+        return Response.json(result)
+      },
+    },
+
+    "/*": index,
   },
 
   development: process.env.NODE_ENV !== "production" && {

@@ -1,48 +1,46 @@
+import { parseSearchPath, searchObj } from '@/App';
 import { states, type SongData } from '@/functions/objects';
-import { useState, useRef, type SetStateAction } from 'react';
+import { update } from 'lodash';
+import { useState, useRef, type SetStateAction, use, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-type SearchBlockParams = {
-  setState: React.Dispatch<SetStateAction<number>>;
-  setResult: React.Dispatch<SetStateAction<any[]>>;
-}
-export default function SearchBlock({
-  setState,
-  setResult,
-}: SearchBlockParams) {
+export default function SearchBlock() {
   const [queryName, setQueryName] = useState('');
   const [queryArtists, setQueryArtists] = useState('');
   const [queryAlbum, setQueryAlbum] = useState('');
   const [queryURL, setQueryURL] = useState('');
+  const navigate = useNavigate()
+  const useLoc = useLocation()
+
+  useEffect(() => {
+    const path = useLoc.pathname.slice(1)
+    if (!path) return
+      else if (path.startsWith('search')) {
+      const search: searchObj = parseSearchPath(path)
+      setQueryName(search.name)
+      setQueryArtists(search.artists.join(', '))
+      setQueryAlbum(search.album)
+    } else {
+      setQueryURL(path)
+    }
+  }, [useLoc.pathname])
 
   function parseQueryArtists(artists: string): Array<string> {
     const artistArray = artists.split(/[,&]/).map((a) => a.trim())
     return artistArray
   }
 
-  const submitForm = async () => {
-    try {
-      const url = new URL("/api/getSongs", location.href);
-      const response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          name: queryName,
-          artists: parseQueryArtists(queryArtists),
-          album: queryAlbum,
-          url: queryURL,
-        })
-      });
-
-      const songs: SongData[] = await response.json();
-      if (songs.length > 0) {
-        setResult(songs)
-        setState(songs.length > 1 ? states.searched : states.selected)
-      } else {
-        setState(states.not_found)
-      }
-    } catch (error) {
-      console.log(String(error));
+  function updateURL() {
+    if (queryURL) {
+      navigate(`/${queryURL}`)
+    } else {
+      const nameQ = queryName ? `song:${queryName}` : ''
+      const artistsQ = queryArtists ? `artists:${queryArtists}` : ''
+      const albumQ = queryAlbum ? `album:${queryAlbum}` : ''
+      const q = encodeURIComponent([nameQ, artistsQ, albumQ].join(' '))
+      navigate(`/search/${q}`)
     }
-  };
+  }
 
   return (
     <div className="
@@ -55,7 +53,7 @@ export default function SearchBlock({
         <div className="p-4  ">
           <form onSubmit={(e) => {
             e.preventDefault()
-            submitForm();
+            updateURL();
           }} className="max-w-sm w-full space-y-3">
             <div className="relative">
               <input
