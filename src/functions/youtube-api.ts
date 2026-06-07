@@ -11,7 +11,7 @@ export default class YouTubeApi extends AbstractApi {
   override platformURL = "youtube.com";
   override apiURL = "";
 
-  musicSpecifcURL: string = "music.youtube.com/watch?v="
+  musicSpecifcURL: string = "https://music.youtube.com/watch?v="
 
   constructor() {
     super();

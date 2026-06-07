@@ -4,6 +4,20 @@ import { update } from 'lodash';
 import { useState, useRef, type SetStateAction, use, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+export function formSearchURL(name: string, artists: string | string[], album: string) {
+  const artistString = (
+    typeof artists === 'string'
+      ? artists
+      : artists.join(',')
+  )
+
+  let query = ''
+  query += name ? `song:${name}` : ''
+  query += artistString ? `artists:${artistString}` : ''
+  query += album ? `album:${album}` : ''
+  const q = encodeURIComponent(query)
+  return `/search/${q}`
+}
 export default function SearchBlock() {
   const [queryName, setQueryName] = useState('');
   const [queryArtists, setQueryArtists] = useState('');
@@ -15,7 +29,7 @@ export default function SearchBlock() {
   useEffect(() => {
     const path = useLoc.pathname.slice(1)
     if (!path) return
-      else if (path.startsWith('search')) {
+    else if (path.startsWith('search')) {
       const search: searchObj = parseSearchPath(path)
       setQueryName(search.name)
       setQueryArtists(search.artists.join(', '))
@@ -25,20 +39,28 @@ export default function SearchBlock() {
     }
   }, [useLoc.pathname])
 
-  function parseQueryArtists(artists: string): Array<string> {
-    const artistArray = artists.split(/[,&]/).map((a) => a.trim())
-    return artistArray
-  }
+  useEffect(() => {
+    if (queryName) setQueryURL('')
+  }, [queryName])
+  useEffect(() => {
+    if (queryArtists) setQueryURL('')
+  }, [queryArtists])
+  useEffect(() => {
+    if (queryAlbum) setQueryURL('')
+  }, [queryAlbum])
+  useEffect(() => {
+    if (queryURL) {
+      setQueryName('')
+      setQueryArtists('')
+      setQueryAlbum('')
+    }
+  }, [queryURL])
 
   function updateURL() {
     if (queryURL) {
       navigate(`/${queryURL}`)
     } else {
-      const nameQ = queryName ? `song:${queryName}` : ''
-      const artistsQ = queryArtists ? `artists:${queryArtists}` : ''
-      const albumQ = queryAlbum ? `album:${queryAlbum}` : ''
-      const q = encodeURIComponent([nameQ, artistsQ, albumQ].join(' '))
-      navigate(`/search/${q}`)
+      navigate(formSearchURL(queryName, queryArtists, queryAlbum))
     }
   }
 

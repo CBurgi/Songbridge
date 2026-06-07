@@ -1,71 +1,66 @@
 import { SongData } from "@/functions/objects";
 import { classicNameResolver } from "typescript";
+import ScrollText from "./ScrollText";
+import { identity } from "lodash";
 
 export default function SongDisplay({ song }: { song: SongData }) {
   return (
-
+    <>
     <div className="
       flex
       p-7
+      w-screen
     ">
-      <div>
-        <div className="flex flex-col bg-card border border-card-line shadow-2xs rounded-xl">
-          <div className="bg-card border border-card-line shadow-2xs rounded-xl">
-            <div className="p-4">
-              <div className="
+      <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
+        <div className="w-full border border-card-line shadow-2xs rounded-xl">
+          <div className="p-2">
+            <div className="
                 flex
-                flex-col
-                items-center
-                gap-6
-                md:flex-row
-                md:gap-8
-                rounded-2xl
+                flex-row
+                gap-4
               ">
-                <img
-                  className="size-24 shadow-xl rounded-lg"
-                  alt={`Album art for ${song.songItem.album}`}
-                  src={song.albumArtURL} /
-                >
-                <div className="grid">
-                  <span className="text-xl font-medium">{song.songItem.name}</span>
-                  <span className="text-md font-medium text-sky-500">{song.songItem.artists.join(', ')}</span>
-                  <span className="
-                    flex
-                    font-medium
-                    text-gray-600
-                    dark:text-gray-400
-                  ">
-                    {song.songItem.album}
-                  </span>
-                  {false &&
-                    (
-                      <span className="flex gap-2 font-medium text-gray-600 dark:text-gray-400">
-                        <span>No. 4</span>
-                        <span>·</span>
-                        <span>2025</span>
-                      </span>
-                    )
-                  }
-                </div>
+              <img
+                className="size-20 shadow-xl rounded-lg"
+                alt={`Album art for ${song.songItem.album}`}
+                src={song.albumArtURL} /
+              >
+              <div className="flex flex-col min-w-0 w-full">
+                <ScrollText
+                  id='name'
+                  classes='text-xl font-md'
+                  text={song.songItem.name}
+                />
+                <ScrollText
+                  id='artists'
+                  classes='font-md text-primary'
+                  text={song.songItem.artists.join(', ')}
+                />
+                <ScrollText
+                  id='album'
+                  classes='font-md text-gray-600'
+                  text={song.songItem.album}
+                />
               </div>
-              <span className="p-2 flex flex-row gap-4">
-                {
-                  song.extURLs.map((p) => {
-                    const platform = p.platform
-                    return (
-                      <img
-                        className="size-10 shadow-md rounded-sm"
-                        alt={`${platform} logo`}
-                        src={`/images/${platform}.png`}
-                      />
-                    )
-                  })
-                }
-              </span>
             </div>
+            <span className="py-2 px-1 flex flex-row gap-2">
+              {
+                song.extURLs.map((p, index: number) => {
+                  const platform = p.platform
+                  return (
+                    <img
+                      id={index.toString()}
+                      className="size-9 shadow-md rounded-sm"
+                      alt={`${platform} logo`}
+                      src={`/images/${platform}.png`}
+                    />
+                  )
+                })
+              }
+            </span>
           </div>
         </div>
       </div>
     </div>
+    </>
   )
 }

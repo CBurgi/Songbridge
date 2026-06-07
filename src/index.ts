@@ -92,7 +92,7 @@ const server = serve({
         const result = await SearchSongs(body.name, body.artists, body.album)
 
         console.log('Response: ');
-        console.log(result);
+        result.forEach((r) => console.log(r))
 
         return Response.json(result)
       },
@@ -107,7 +107,6 @@ const server = serve({
 
         console.log('Response: ');
         result.forEach((r) => console.log(r))
-        // console.log(result);
 
         return Response.json(result)
       },

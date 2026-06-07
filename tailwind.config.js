@@ -5,8 +5,6 @@ export default{
     extend: {},
   },
   plugins: [],
-}
-module.exports = {
   experimental: {
     applyComplexClasses: true,
   },

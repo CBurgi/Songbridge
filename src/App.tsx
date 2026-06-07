@@ -4,19 +4,27 @@ import { EmptySongData, SongData, states } from './functions/objects';
 
 import SongDisplay from './components/SongDisplay'
 import PlatformDisplay from './components/PlatformDisplay';
-import SearchBlock from './components/SearchBlock';
+import SearchBlock, { formSearchURL } from './components/SearchBlock';
+import Header from './components/Header';
 
-  export type searchObj = {
-    name: string;
-    artists: string[];
-    album: string;
-  }
+export type searchObj = {
+  name: string;
+  artists: string[];
+  album: string;
+}
+const nameRegex = /song:(?<ret>.*?)(?=album:|artists:|$)/
+const artistsRegex = /artists:(?<ret>.*?)(?=song:|album:|$)/
+const albumRegex = /album:(?<ret>.*?)(?=song:|artist:|$)/
 export function parseSearchPath(searchPath: string): searchObj {
-  const query: string[] = decodeURI(searchPath).replace('search/', '').split(' ')
+  const query: string = decodeURIComponent(searchPath)
+  const name = query.match(nameRegex)?.groups?.ret ?? ''
+  const artists = query.match(artistsRegex)?.groups?.ret?.split(',') ?? []
+  const album = query.match(albumRegex)?.groups?.ret ?? ''
+
   const search: searchObj = {
-    name: query.find((q) => q.startsWith('song:'))?.replace('song:', '') ?? '',
-    artists: query.find((q) => q.startsWith('artists:'))?.replace('artists:', '').split(',') ?? [],
-    album: query.find((q) => q.startsWith('album:'))?.replace('album:', '') ?? ''
+    name,
+    artists,
+    album,
   }
   return search
 }
@@ -24,6 +32,7 @@ export function parseSearchPath(searchPath: string): searchObj {
 export function App() {
   const baseLocation: string = location.origin
   const useLoc = useLocation();
+  const navigate = useNavigate()
 
   const [state, setState] = useState(states.unsearched);
   const [result, setResult] = useState([EmptySongData]);
@@ -76,55 +85,52 @@ export function App() {
     }
   }
   function updateResult(songs: SongData[]) {
-    if (songs.length > 0) {
-      setResult(songs)
-      setState(songs.length > 1 ? states.searched : states.selected)
-    } else {
-      setState(states.not_found)
+    switch (songs.length) {
+      case 0:
+        setState(states.not_found)
+        break;
+      case 1:
+        setSongData(songs[0] ?? EmptySongData)
+        setState(states.selected)
+        break;
+
+      default:
+        setResult(songs)
+        setState(states.searched)
+        break;
     }
   }
 
   return (
     <div>
-      <span className="font-sans font-bold text-lg">Songbridge</span>
-      <br />
-      <span className="font-sans font-bold text-lg">{state}</span>
+      <Header />
 
       <SearchBlock />
       {
         (
           state === states.searched
         ) && (
-          <div>
+          <>
             {
-              result.map((r: SongData) => (
-                <SongDisplay
-                  song={r}
-                />
+              result.map((r: SongData, index: number) => (
+                <button id={index.toString()} onClick={() => {
+                  navigate(`/${r.extURLs[0]?.URL ?? ''}`)}}>
+                  <SongDisplay
+                    song={r}
+                  />
+                </button>
               ))
             }
-          </div>
+          </>
         )
       }
       {
         (
           state === states.selected
         ) && (
-          <div>
-            {
-              result.map((r: SongData) => (
-                <SongDisplay
-                  song={r}
-                />
-                // <PlatformDisplay
-                //   song={r.name}
-                //   artist={r.artists.join(', ')}
-                //   album={r.album}
-                //   platform={r.albumArtURL}
-                // />
-              ))
-            }
-          </div>
+          <PlatformDisplay
+            song={songData}
+          />
         )
       }
 
