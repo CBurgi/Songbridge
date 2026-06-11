@@ -68,7 +68,7 @@ export default function SearchBlock({ collapse = false }: searchBlockParams) {
   }
 
   return (
-    <div className=" flex flex-col gap-6 p-7 ">
+    <div className=" flex flex-col gap-6 px-7 pt-6 p-3 ">
       <div className="flex flex-col bg-card border border-card-line shadow-2xs rounded-xl">
         <button type="button" className="hs-collapse-toggle" id="hs-search-collapse" aria-expanded="false" aria-controls="hs-search" aria-label="Toggle search" data-hs-collapse="#hs-search">
           <div className="p-1 pb-2 bg-gray-100 hs-collapse-open:rounded-b-none rounded-xl">
