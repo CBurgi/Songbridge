@@ -2,8 +2,8 @@ import { pages } from "@/functions/objects"
 import { useLocation } from "react-router-dom"
 
 export default function Header({page}: {page: string}) {
-  const thisPageStyle: string = "font-medium text-primary-active focus:outline-hidden"
-  const otherPageStyle: string = "text-sm text-navbar-nav-foreground hover:text-primary-hover focus:outline-hidden focus:text-primary-focus"
+  const thisPageStyle: string = "text-lg font-medium text-primary-active"
+  const otherPageStyle: string = "text-md text-navbar-nav-foreground"
 
   function getAStyle(link: string): string {
     return (
@@ -29,7 +29,7 @@ export default function Header({page}: {page: string}) {
   return (
     <>
       <header className=" relative flex justify-start flex-nowrap w-full py-3 bg-navbar border-b border-navbar-line ">
-        <nav className=" w-full px-4 flex items-center ">
+        <nav className="max-w-340 w-full px-4">
           <div className="flex w-full items-center justify-between">
             <a href="/" aria-label="Brand">
               <img className="size-10 rounded-md" src="/images/logo.png" alt="Logo" />
@@ -42,10 +42,12 @@ export default function Header({page}: {page: string}) {
               <svg className="hs-collapse-open:block hidden shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
             </button>
           </div>
-          <div id="hs-navbar" className="hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow block" aria-labelledby="hs-navbar-collapse" role="region">
-            <div className=" flex gap-5 flex-row items-center justify-end mt-0 ps-5 ">
+          <div id="hs-navbar" className=" hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow block " aria-labelledby="hs-navbar-collapse" role="region">
+            <div className=" flex gap-5 pt-2 flex-row items-center justify-center mt-0 ps-5 ">
               <HsLink link={pages.search} pageName='Search' />
+              <p className="text-stone-400">|</p>
               <HsLink link={pages.about} pageName='About' />
+              <p className="text-stone-400">|</p>
               <HsLink link={pages.supportedPlatforms} pageName='Supported Platforms' />
             </div>
           </div>
