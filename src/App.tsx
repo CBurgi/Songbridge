@@ -43,11 +43,11 @@ export function App() {
   }
 
   return (
-    <>
+    <div className="w-sm mx-auto flex-col justify-center">
       <Header page={page}/>
 
       <Page />
-    </>
+    </div>
   );
 }
 
