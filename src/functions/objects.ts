@@ -1,4 +1,5 @@
-import { expr } from "jquery";
+import { plugin } from "bun";
+import expr from "jquery";
 
 export interface SongItem {
   name: string;
@@ -39,6 +40,24 @@ export const Platforms: PlatformsObj = Object.freeze({
   spotify: "spotify",
   youtube: "youtube",
 })
+interface PlatformLinkObj {
+  platform: string;
+  platformName: string;
+  link: string;
+}
+export const PlatformLinks: PlatformLinkObj[] = [
+  {
+    platform: Platforms.spotify,
+    platformName: "Spotify",
+    link: "https://open.spotify.com/"
+  },
+  {
+    platform: Platforms.youtube,
+    platformName: "Youtube Music",
+    link: "https://music.youtube.com/"
+  },
+
+]
 
 interface StatesObj {
   not_found: number;
