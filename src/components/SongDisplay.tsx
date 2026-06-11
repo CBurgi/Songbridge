@@ -8,7 +8,8 @@ export default function SongDisplay({ song }: { song: SongData }) {
     <>
     <div className="
       flex
-      p-7
+      px-7
+      p-3
       w-screen
     ">
       <div className="w-full flex border border-card-line shadow-2xs rounded-xl">

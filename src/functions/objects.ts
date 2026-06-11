@@ -1,3 +1,5 @@
+import { expr } from "jquery";
+
 export interface SongItem {
   name: string;
   artists: string[];
@@ -51,4 +53,15 @@ export const states: StatesObj = Object.freeze({
   searching: 1,
   searched: 2,
   selected: 3,
+})
+
+interface PagesObj {
+  search: string;
+  about: string;
+  supportedPlatforms: string;
+}
+export const pages: PagesObj = Object.freeze({
+  search: '',
+  about: 'about',
+  supportedPlatforms: 'supported-platforms'
 })

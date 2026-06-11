@@ -9,7 +9,7 @@ export default function PlatformDisplay({ song }: { song: SongData }) {
       {
         song.extURLs.map((e) => (
           <a href={e.URL} rel="external" >
-          <div className=" flex p-7 w-screen ">
+          <div className=" flex px-7 p-3 w-screen ">
             <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
               <div className="w-full border border-card-line shadow-2xs rounded-xl">
                 <div className="p-2">

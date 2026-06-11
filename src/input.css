@@ -8,5 +8,11 @@
 @import "../node_modules/preline/variants.css";
 /* Plugins */
 @plugin "@tailwindcss/forms";
+
+/* @preline/collapse */
+@source "../node_modules/@preline/collapse/*.js";
+@import "../node_modules/@preline/collapse/variants.css";
+@import "../node_modules/@preline/collapse/theme.css";
 /* Preline Themes */
 @import "./themes/theme.css";
+
