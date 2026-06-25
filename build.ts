@@ -1,7 +1,11 @@
 import { $ } from "bun";
 
 console.log("Removing obsolete build...");
-await $`rm dist/index* dist/logo*`;
+try {
+  await $`rm dist/index* dist/logo*`;
+} catch {
+  // Ignore errors if files don't exist
+}
 
 console.log("Installing dependencies...");
 await $`bun i`;
