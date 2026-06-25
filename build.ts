@@ -1,5 +1,8 @@
 import { $ } from "bun";
 
+console.log("Removing obsolete build...");
+await $`rm dist/index* dist/logo*`;
+
 console.log("Installing dependencies...");
 await $`bun i`;
 
