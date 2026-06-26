@@ -19,5 +19,8 @@ await $`bun build --target=bun --production --outdir=dist ./src/index.ts`;
 console.log("Building frontend...");
 await $`bun build --production --outdir=dist ./src/frontend.tsx`;
 
+console.log("Copying public files into dist...");
+await $`cp -r ./public/ ./dist`;
+
 console.log("Build complete!");
 
