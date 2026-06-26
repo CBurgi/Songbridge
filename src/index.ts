@@ -1,5 +1,4 @@
 import { serve } from "bun";
-import index from "./index.html";
 import { getToken } from "./functions/tokenStore";
 import { Platforms, SongData } from "./functions/objects";
 import SpotifyApi from "./functions/spotify-api";
@@ -40,6 +39,7 @@ async function SearchSongs(
 
     return songs;
   } catch (error) {
+    console.log(error)
     return []
   }
 }
@@ -68,7 +68,8 @@ async function GetSongByURL(URL: string): Promise<SongData[] | []> {
     }
 
     return [targetSong]
-  } catch (e) {
+  } catch (error) {
+    console.log(error)
     return []
   }
 }
@@ -80,6 +81,21 @@ const server = serve({
         const filePath = "./public" + new URL(req.url).pathname
         const file = Bun.file(filePath)
         return new Response(file)
+      }
+    },
+
+    "/dist/*": {
+      GET: async (req) => {
+        const pathname = new URL(req.url).pathname
+        const filePath = "." + pathname
+        const file = Bun.file(filePath)
+
+        let contentType = "application/octet-stream"
+        if (pathname.endsWith(".js")) contentType = "application/javascript"
+        else if (pathname.endsWith(".css")) contentType = "text/css"
+        else if (pathname.endsWith(".json")) contentType = "application/json"
+
+        return new Response(file, { headers: { "Content-Type": contentType } })
       }
     },
 
@@ -112,7 +128,12 @@ const server = serve({
       },
     },
 
-    "/*": index,
+    "/*": {
+      GET: async () => {
+        const file = Bun.file("./public/index.html")
+        return new Response(file, { headers: { "Content-Type": "text/html" } })
+      }
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {
