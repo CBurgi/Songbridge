@@ -105,10 +105,13 @@ export default function Search() {
         return (
           <>
             {
-              result.map((r: SongData, index: number) => (
-                <button className="w-full" id={index.toString()} onClick={() => {
-                  navigate(`/${r.extURLs[0]?.URL ?? ''}`)
-                }}>
+              result.map((r: SongData) => (
+                < button
+                  className="w-full"
+                  key={self.crypto.randomUUID()}
+                  onClick={() => {
+                    navigate(`/${r.extURLs[0]?.URL ?? ''}`)
+                  }}>
                   <SongDisplay song={r} />
                 </button>
               ))
@@ -122,7 +125,7 @@ export default function Search() {
       default:
         return (
           <></>
-      )
+        )
     }
   }
 

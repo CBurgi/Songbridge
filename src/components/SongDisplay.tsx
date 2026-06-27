@@ -44,11 +44,11 @@ export default function SongDisplay({ song }: { song: SongData }) {
             </div>
             <span className="py-2 px-1 flex flex-row gap-2">
               {
-                song.extURLs.map((p, index: number) => {
+                song.extURLs.map((p) => {
                   const platform = p.platform
                   return (
                     <img
-                      id={index.toString()}
+                      key={self.crypto.randomUUID()}
                       className="size-8 shadow-md rounded-sm"
                       alt={`${platform} logo`}
                       src={`/images/${platform}.png`}
