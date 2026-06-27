@@ -8,7 +8,7 @@ export default function PlatformDisplay({ song }: { song: SongData }) {
     <>
       {
         song.extURLs.map((e) => (
-          <a className="w-full" href={e.URL} rel="external" >
+          <a className="w-full" href={e.URL} rel="external" key={self.crypto.randomUUID()} >
           <div className=" flex px-7 p-3 ">
             <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
               <div className="w-full border border-card-line shadow-2xs rounded-xl">
