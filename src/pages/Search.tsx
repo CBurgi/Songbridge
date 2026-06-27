@@ -33,6 +33,7 @@ export default function Search() {
   const navigate = useNavigate()
 
   const [state, setState] = useState(states.unsearched);
+  const [path, setPath] = useState('');
   const [result, setResult] = useState([EmptySongData]);
   const [songData, setSongData] = useState(EmptySongData);
 
@@ -42,12 +43,24 @@ export default function Search() {
       setState(states.unsearched)
     else if (path.startsWith('search')) {
       setState(states.searching)
+      setPath(path)
       searchSongs(path)
     } else {
       setState(states.searching)
       getSong(path)
     }
   }, [useLoc]);
+
+  function sort_mostPlatforms(a: SongData, b: SongData): number {
+
+  }
+  function sort_closeness(a: SongData, b: SongData): number {
+    const search = parseSearchPath(path)
+
+  }
+  function sortSongs(songs: SongData[]) {
+    
+  }
 
   async function searchSongs(searchPath: string) {
     try {
@@ -59,6 +72,7 @@ export default function Search() {
       });
 
       const songs: SongData[] = await response.json();
+      sortSongs(songs)
       updateResult(songs)
     } catch (error) {
       console.log(String(error));
