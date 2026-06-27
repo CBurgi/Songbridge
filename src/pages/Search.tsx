@@ -106,7 +106,7 @@ export default function Search() {
           <>
             {
               result.map((r: SongData, index: number) => (
-                <button id={index.toString()} onClick={() => {
+                <button className="w-full" id={index.toString()} onClick={() => {
                   navigate(`/${r.extURLs[0]?.URL ?? ''}`)
                 }}>
                   <SongDisplay song={r} />

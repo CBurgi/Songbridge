@@ -8,40 +8,40 @@ export default function PlatformDisplay({ song }: { song: SongData }) {
     <>
       {
         song.extURLs.map((e) => (
-          <a href={e.URL} rel="external" >
-          <div className=" flex px-7 p-3 w-screen ">
+          <a className="w-full" href={e.URL} rel="external" >
+          <div className=" flex px-7 p-3 ">
             <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
               <div className="w-full border border-card-line shadow-2xs rounded-xl">
                 <div className="p-2">
                   <div className=" flex flex-row gap-4 ">
                     <img
-                      className="size-20 shadow-xl rounded-lg"
+                      className="size-16 shadow-xl rounded-lg"
                       alt={`Logo for ${e.platform}`}
                       src={`/images/${e.platform}.png`} /
                     >
                     <div className="flex flex-col min-w-0 w-full">
                       <ScrollText
                         id='name'
-                        classes='text-xl font-md'
+                        classes='text-md font-semibold '
                         text={song.songItem.name}
                       />
                       <ScrollText
                         id='artists'
-                        classes='font-md text-primary'
+                        classes='text-sm text-primary'
                         text={song.songItem.artists.join(', ')}
                       />
                       <ScrollText
                         id='album'
-                        classes='font-md text-gray-600'
+                        classes='text-sm text-gray-600'
                         text={song.songItem.album}
-                      />
-                      <ScrollText
-                        id='link'
-                        classes='font-md text-gray-600'
-                        text={e.URL}
                       />
                       </div>
                   </div>
+                      <ScrollText
+                        id='link'
+                        classes='text-sm text-gray-600'
+                        text={e.URL}
+                      />
                 </div>
               </div>
             </div>
