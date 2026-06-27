@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --hot src/index.ts",
+    "dev": "bun --hot src/index-dev.ts",
     "build": "bun build.ts",
-    "start": "NODE_ENV=production bun src/index.ts"
+    "start": "bun build.ts && bun dist/index.js"
   },
   "dependencies": {
     "@preline/collapse": "^4.2.0",
     "@tailwindcss/cli": "^4.3.0",
+    "@types/dropzone": "^5.7.9",
     "@types/jquery": "^4.0.0",
     "bun-plugin-tailwind": "^0.1.2",
     "dotenv": "^17.4.2",
@@ -37,5 +38,4 @@
   "peerDependencies": {
     "typescript": "^5"
   }
-  
 }
