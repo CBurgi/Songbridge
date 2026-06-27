@@ -10,7 +10,6 @@ export default function SongDisplay({ song }: { song: SongData }) {
       flex
       px-7
       p-3
-      w-full
     ">
       <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
         <div className="w-full border border-card-line shadow-2xs rounded-xl">
@@ -21,24 +20,24 @@ export default function SongDisplay({ song }: { song: SongData }) {
                 gap-4
               ">
               <img
-                className="size-20 shadow-xl rounded-lg"
+                className="size-16 shadow-xl rounded-lg"
                 alt={`Album art for ${song.songItem.album}`}
                 src={song.albumArtURL} /
               >
               <div className="flex flex-col min-w-0 w-full">
                 <ScrollText
                   id='name'
-                  classes='text-xl font-md'
+                  classes='text-md font-semibold'
                   text={song.songItem.name}
                 />
                 <ScrollText
                   id='artists'
-                  classes='font-md text-primary'
+                  classes='text-sm text-primary'
                   text={song.songItem.artists.join(', ')}
                 />
                 <ScrollText
                   id='album'
-                  classes='font-md text-gray-600'
+                  classes='text-sm text-gray-600'
                   text={song.songItem.album}
                 />
               </div>
@@ -50,7 +49,7 @@ export default function SongDisplay({ song }: { song: SongData }) {
                   return (
                     <img
                       id={index.toString()}
-                      className="size-9 shadow-md rounded-sm"
+                      className="size-8 shadow-md rounded-sm"
                       alt={`${platform} logo`}
                       src={`/images/${platform}.png`}
                     />
