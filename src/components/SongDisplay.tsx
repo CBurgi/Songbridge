@@ -10,7 +10,7 @@ export default function SongDisplay({ song }: { song: SongData }) {
       flex
       px-7
       p-3
-      w-screen
+      w-full
     ">
       <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
         <div className="w-full border border-card-line shadow-2xs rounded-xl">
