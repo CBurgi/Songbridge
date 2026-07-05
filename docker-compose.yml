@@ -1,0 +1,10 @@
+services:
+  songbridge:
+    build: .
+    container_name: songbridge
+    ports:
+      - "3000:3000"
+    env_file: .env
+    environment:
+      - BASE_URL=http://songbridge:3000
+    restart: unless-stopped
