@@ -1,25 +1,21 @@
 import PlatformDisplay from "@/components/PlatformDisplay";
 import SearchBlock from "@/components/SearchBlock";
 import SongDisplay from "@/components/SongDisplay";
-import { EmptySongData, Platforms, SongData, states } from "@/functions/objects";
+import { EmptySongData, Platforms, SongData, SongItem, states } from "@/functions/objects";
+import sortSongs from "@/functions/sorting";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export type searchObj = {
-  name: string;
-  artists: string[];
-  album: string;
-}
 const nameRegex = /song:(?<ret>.*?)(?=album:|artists:|$)/
 const artistsRegex = /artists:(?<ret>.*?)(?=song:|album:|$)/
 const albumRegex = /album:(?<ret>.*?)(?=song:|artist:|$)/
-export function parseSearchPath(searchPath: string): searchObj {
+export function parseSearchPath(searchPath: string): SongItem {
   const query: string = decodeURIComponent(searchPath)
   const name = query.match(nameRegex)?.groups?.ret ?? ''
   const artists = query.match(artistsRegex)?.groups?.ret?.split(',') ?? []
   const album = query.match(albumRegex)?.groups?.ret ?? ''
 
-  const search: searchObj = {
+  const search: SongItem = {
     name,
     artists,
     album,
@@ -51,70 +47,6 @@ export default function Search() {
     }
   }, [useLoc]);
 
-  function sort_mostPlatforms(a: SongData, b: SongData): number {
-    return b.extURLs.length - a.extURLs.length
-  }
-  function sort_var_closeness(a: string, b: string, search: string): number {
-    if (
-      a.trim().toLowerCase() === search.trim().toLowerCase()
-      && !(b.trim().toLowerCase() === search.trim().toLowerCase())
-    )
-      return -1
-    if (
-      !(a.trim().toLowerCase() === search.trim().toLowerCase())
-      && (b.trim().toLowerCase() === search.trim().toLowerCase())
-    )
-      return 1
-    return 0
-  }
-  function sort_artist_closeness(a: string[], b: string[], search: string[]): number {
-    search.forEach((n) => {
-      if (
-        a.find((an) => an.trim().toLowerCase() === n.trim().toLowerCase())
-        && !b.find((bn) => bn.trim().toLowerCase() === n.trim().toLowerCase())
-      )
-        return -1
-      if (
-        !a.find((an) => an.trim().toLowerCase() === n.trim().toLowerCase())
-        && b.find((bn) => bn.trim().toLowerCase() === n.trim().toLowerCase())
-      )
-        return 1
-    })
-    return 0
-  }
-  function sort_closeness(a: SongData, b: SongData): number {
-    const search = parseSearchPath(path)
-    const a_song: searchObj = a.songItem
-    const b_song: searchObj = b.songItem
-
-    return (
-      sort_var_closeness(
-        a_song.name.trim().toLowerCase(),
-        b_song.name.trim().toLowerCase(),
-        search.name.trim().toLowerCase()
-      )
-      || sort_artist_closeness(
-        a_song.artists,
-        b_song.artists,
-        search.artists
-      )
-      || sort_var_closeness(
-        a_song.album.trim().toLowerCase(),
-        b_song.album.trim().toLowerCase(),
-        search.album.trim().toLowerCase()
-      )
-    )
-  }
-  function sort_fn(a: SongData, b: SongData): number {
-    return (
-      sort_mostPlatforms(a, b)
-      || sort_closeness(a, b)
-    )
-  }
-  function sortSongs(songs: SongData[]): SongData[] {
-    return songs.sort(sort_fn)
-  }
-
   async function searchSongs(searchPath: string) {
     try {
       const search = parseSearchPath(searchPath)
@@ -126,7 +58,7 @@ export default function Search() {
 
       const songs: SongData[] = await response.json();
       const filteredSongs = removeOnlyYoutube(songs)
-      const sortedSongs = sortSongs(filteredSongs)
+      const sortedSongs = sortSongs(filteredSongs, path)
       updateResult(sortedSongs)
     } catch (error) {
       console.error(String(error));
