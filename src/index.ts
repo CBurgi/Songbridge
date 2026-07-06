@@ -74,7 +74,9 @@ async function GetSongByURL(URL: string): Promise<SongData[] | []> {
   }
 }
 
+const port = parseInt(process.env.PORT ?? "8080")
 const server = serve({
+  port,
   routes: {
     "/images/*": {
       GET: async (req) => {
