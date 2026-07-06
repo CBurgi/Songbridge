@@ -1,36 +1,39 @@
-import { SongData } from "@/functions/objects";
+import { SongData, PlatformLinks, PlatformLinkObj } from "@/functions/objects";
 import { classicNameResolver } from "typescript";
 import ScrollText from "./ScrollText";
 import { identity } from "lodash";
 
-type platformSupportedDisplayObject = {
-  platform: string;
-  link: string;
-}
-export default function PlatformSupportedDisplay({ platform, link }: platformSupportedDisplayObject) {
+export default function PlatformSupportedDisplay() {
   return (
     <>
-          <a href={link} rel="external" >
-          <div className=" flex px-7 p-3 w-screen ">
+      {
+        PlatformLinks.map((p) => (
+          <a className="w-full" href={p.link} rel="external" key={self.crypto.randomUUID()}>
+          <div className=" flex px-7 p-3">
             <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
-              <div className="w-full border border-card-line shadow-2xs rounded-xl">
+              <div className={`w-full border border-card-line shadow-2xs rounded-xl ${p.supported ? '' : 'bg-gray-400'}`}>
                 <div className="p-2">
-                  <div className=" flex flex-row gap-4 ">
+                  <div className=" flex flex-row gap-4">
                     <img
-                      className="size-20 shadow-xl rounded-lg"
-                      alt={`Logo for ${platform}`}
-                      src={`/images/${platform}.png`} /
+                      className={`size-16 shadow-xl rounded-lg ${p.supported ? '' : 'brightness-50'}`}
+                      alt={`Logo for ${p.platformName}`}
+                      src={`/images/${p.platform}.png`} /
                     >
                     <div className="flex flex-col min-w-0 w-full">
                       <ScrollText
                         id='name'
-                        classes='text-xl font-md'
-                        text={platform}
+                        classes='text-md font-semibold'
+                        text={p.platformName}
                       />
                       <ScrollText
                         id='link'
-                        classes='font-md text-gray-600'
-                        text={link}
+                        classes='font-sm text-gray-600'
+                        text={p.link}
+                      />
+                      <ScrollText
+                        id='extra_text'
+                        classes='font-sm text-red-800'
+                        text={p.extra_text}
                       />
                       </div>
                   </div>
@@ -39,6 +42,7 @@ export default function PlatformSupportedDisplay({ platform, link }: platformSup
             </div>
           </div>
           </a>
+        ))}
     </>
   )
 }
