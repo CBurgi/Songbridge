@@ -1,7 +1,4 @@
 import { Platforms } from "./objects";
-import { init, credentialsProvider } from "@tidal-music/auth"
-import { LocalStorage } from 'node-localstorage';
-globalThis.localStorage = new LocalStorage('./scratch');
 
 require('dotenv').config({ path: '/.env' });
 
@@ -98,19 +95,9 @@ async function refreshToken(platform: string): Promise<void> {
         if (!res_spotify.ok) throw new Error(`${platform} token refresh failed: ` + res_spotify.status);
         json = await res_spotify.json();
         break;
-      case Platforms.tidal:
-        await init({
-          clientId: b.clientId,
-          clientSecret: b.clientSecret,
-          credentialsStorageKey: 'clientCredentials'
-        })
-        const res_tidal = await credentialsProvider.getCredentials()
-        console.log(res_tidal);
-        
-        break;
 
       default:
-        throw new Error(`${platform} is not supported.`);
+        throw new Error(`${platform} auth is not supported.`);
     }
 
     setToken(platform, json.access_token, json.expires_in);

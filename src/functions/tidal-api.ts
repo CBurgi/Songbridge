@@ -1,29 +1,46 @@
 import AbstractApi from "./abstract-api";
 import { SongData, EmptySongData } from "./objects";
 import { Platforms } from "./objects";
+//@ts-ignore
+import Tidal from "tidal-api-wrapper";
+
+const api = new Tidal();
 
 export default class TidalApi extends AbstractApi {
-  override platform = Platforms.spotify;
-  override idRegex = /[\w\d]{22}/;
-  override apiURL = "https://openapi.tidal.com";
+  override platform = Platforms.tidal;
+  override idRegex = /[\d]{7,}/;
+  override apiURL = "";
 
-  constructor(){super();}
+  constructor() {
+    super();
+  }
+
+  override GetAlbumArtURL(art: any): string {
+    const sizes: string[] = ['xl', 'lg', 'md', 'sm']
+
+    sizes.forEach((s) => {
+      if (art[s]) return art[s]
+    })
+
+    return ''
+  }
 
   override ParseSong(song: any): SongData {
     const parsed: SongData = structuredClone(EmptySongData);
-      
-    const albumArtURL = this.GetAlbumArtURL(song.album.images);
 
-    parsed.songItem.name = song.name ?? '';
+    const albumArtURL = this.GetAlbumArtURL(
+      api.albumArtToUrl(song.album.cover)
+    );
+
+    parsed.songItem.name = song.title ?? '';
     parsed.songItem.artists = song.artists?.map((a: any) => a.name) ?? [];
-    parsed.songItem.album = song.album.name ?? '';
+    parsed.songItem.album = song.album.title ?? '';
     parsed.albumArtURL = albumArtURL;
-    parsed.release = new Date(song.album.release_date);
+    parsed.release = new Date(song.streamStartDate);
     parsed.extURLs = [{
       platform: this.platform,
-      URL: song.external_urls.spotify
-    }]
-    parsed.isrc = song.external_ids.isrc;
+      URL: song.url
+    }];
 
     return parsed;
   }
@@ -35,8 +52,7 @@ export default class TidalApi extends AbstractApi {
   }
 
   override async GetSongByID(id: string): Promise<SongData> {
-    const url = new URL(`/v1/tracks/${id}`, this.apiURL);
-    const res = await this.APIGET(url);
+    const res = await api.getTrack(id)
 
     const parsedSong = this.ParseSong(res);
 
@@ -44,17 +60,14 @@ export default class TidalApi extends AbstractApi {
   }
 
   override async SearchSong(name: string, artists: Array<string>, album: string): Promise<SongData[]> {
-    const nameString = name ? `track:${name}` : ''
-    const artistString = artists.map((a) => { return a ? `artist:${a}` : ''}).join(' ')
-    const albumString = album ? `album:${album}` : ''
+    const nameString = name ?? ''
+    const artistString = artists.map((a) => { return a ? a : '' }).join(', ')
+    const albumString = album ?? ''
     const query = [nameString, artistString, albumString].join(' ')
-    const path = `/v1/search?type=track&limit=7&q=${query}`
 
-    const url = new URL(path, this.apiURL);
-    
-    const res = await this.APIGET(url);
+    const res = await api.search(query, 'tracks', 5)
 
-    const parsedSongs = res.tracks.items.map((t: any) => this.ParseSong(t));
+    const parsedSongs = res.map((t: any) => this.ParseSong(t));
 
     return parsedSongs
   }

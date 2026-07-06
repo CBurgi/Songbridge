@@ -1,15 +1,17 @@
 import { serve } from "bun";
 import index from "./index.html"
 import { getToken } from "./functions/tokenStore";
-import { Platforms, SongData } from "./functions/objects";
+import { PlatformLinks, Platforms, SongData } from "./functions/objects";
 import SpotifyApi from "./functions/spotify-api";
 import AbstractApi from "./functions/abstract-api";
+import TidalApi from "./functions/tidal-api";
 import YouTubeApi from "./functions/youtube-api";
 import _ from 'lodash'
 
 const apis = [
   new SpotifyApi(),
   new YouTubeApi(),
+  new TidalApi(),
 ]
 
 async function SearchSongs(
@@ -47,7 +49,11 @@ async function SearchSongs(
 
 async function GetSongByURL(URL: string): Promise<SongData[] | []> {
   try {
-    const api = apis.find((a) => URL.includes(a.platformURL))
+    const api = apis.find((a) => {
+      const url = PlatformLinks.find((p) => p.platform = a.platform)?.link
+      if (!url) throw Error;
+      URL.includes(url)
+    })
     if (!api) throw Error;
 
     const targetSong = await api.GetSongByURL(URL)
@@ -102,9 +108,6 @@ const server = serve({
 
     "/api/searchSongs": {
       POST: async (req) => {
-        const tok = await getToken(Platforms.tidal)
-        console.log("Tidal token:")
-        console.log(tok)
         const body = await req.json();
 
         if (process.env.LOG_API_REQUESTS === '1') {
