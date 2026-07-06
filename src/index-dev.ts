@@ -1,4 +1,5 @@
 import { serve } from "bun";
+import index from "./index.html"
 import { getToken } from "./functions/tokenStore";
 import { Platforms, SongData } from "./functions/objects";
 import SpotifyApi from "./functions/spotify-api";
@@ -74,9 +75,7 @@ async function GetSongByURL(URL: string): Promise<SongData[] | []> {
   }
 }
 
-const port = parseInt(process.env.PORT ?? "8080")
 const server = serve({
-  port,
   routes: {
     "/images/*": {
       GET: async (req) => {
@@ -130,12 +129,7 @@ const server = serve({
       },
     },
 
-    "/*": {
-      GET: async () => {
-        const file = Bun.file("./public/index.html")
-        return new Response(file, { headers: { "Content-Type": "text/html" } })
-      }
-    },
+    "/*": index,
   },
 
   development: process.env.NODE_ENV !== "production" && {
