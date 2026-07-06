@@ -35,10 +35,12 @@ export const EmptySongData: SongData = Object.freeze({
 interface PlatformsObj {
   spotify: string;
   youtube: string;
+  tidal: string;
 }
 export const Platforms: PlatformsObj = Object.freeze({
   spotify: "spotify",
   youtube: "youtube",
+  tidal: "tidal",
 })
 interface PlatformLinkObj {
   platform: string;
@@ -56,7 +58,11 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platformName: "Youtube Music",
     link: "https://music.youtube.com/"
   },
-
+  {
+    platform: Platforms.tidal,
+    platformName: "Tidal",
+    link: "https://https://tidal.com//"
+  },
 ]
 
 interface StatesObj {

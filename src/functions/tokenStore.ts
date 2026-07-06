@@ -1,12 +1,15 @@
 import { Platforms } from "./objects";
+import { init, credentialsProvider } from "@tidal-music/auth"
+import { LocalStorage } from 'node-localstorage';
+globalThis.localStorage = new LocalStorage('./scratch');
 
 require('dotenv').config({ path: '/.env' });
 
 interface bearerToken {
   platform: string;
   tokenURL: string;
-  clientId: string | undefined;
-  clientSecret: string | undefined;
+  clientId: string;
+  clientSecret: string;
   token: string;
   expiry: number;
   refreshing: Promise<void> | null;
@@ -15,8 +18,17 @@ const bearerTokens: Array<bearerToken> = [
   {
     platform: Platforms.spotify,
     tokenURL: "https://accounts.spotify.com/api/token",
-    clientId: process.env.SPOTIFY_CLIENT_ID,
-    clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+    clientId: process.env.SPOTIFY_CLIENT_ID ?? '',
+    clientSecret: process.env.SPOTIFY_CLIENT_SECRET ?? '',
+    token: '',
+    expiry: 0,
+    refreshing: null,
+  },
+  {
+    platform: Platforms.tidal,
+    tokenURL: "https://auth.tidal.com/v1/oauth2/token",
+    clientId: process.env.TIDAL_CLIENT_ID ?? '',
+    clientSecret: process.env.TIDAL_CLIENT_SECRET ?? '',
     token: '',
     expiry: 0,
     refreshing: null,
@@ -67,19 +79,40 @@ export function clearToken(platform: string): void {
 async function refreshToken(platform: string): Promise<void> {
   const b = getBearer(platform);
   try {
-    const reqBody = {
-      client_id: b.clientId,
-      client_secret: b.clientSecret,
-      grant_type: 'client_credentials'
+    let json = {
+      access_token: '',
+      expires_in: 0,
     }
-    const res = await fetch(b.tokenURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: Object.entries(reqBody).map(([key, val]) => `${key}=${val}`).join('&'),
-    });
+    switch (platform) {
+      case Platforms.spotify:
+        const reqBody = {
+          client_id: b.clientId,
+          client_secret: b.clientSecret,
+          grant_type: 'client_credentials'
+        }
+        const res_spotify = await fetch(b.tokenURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: Object.entries(reqBody).map(([key, val]) => `${key}=${val}`).join('&'),
+        });
+        if (!res_spotify.ok) throw new Error(`${platform} token refresh failed: ` + res_spotify.status);
+        json = await res_spotify.json();
+        break;
+      case Platforms.tidal:
+        await init({
+          clientId: b.clientId,
+          clientSecret: b.clientSecret,
+          credentialsStorageKey: 'clientCredentials'
+        })
+        const res_tidal = await credentialsProvider.getCredentials()
+        console.log(res_tidal);
+        
+        break;
 
-    if (!res.ok) throw new Error('Token refresh failed: ' + res.status);
-    const json = await res.json();
+      default:
+        throw new Error(`${platform} is not supported.`);
+    }
+
     setToken(platform, json.access_token, json.expires_in);
   } catch (err) {
     clearToken(platform);

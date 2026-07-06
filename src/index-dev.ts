@@ -102,6 +102,9 @@ const server = serve({
 
     "/api/searchSongs": {
       POST: async (req) => {
+        const tok = await getToken(Platforms.tidal)
+        console.log("Tidal token:")
+        console.log(tok)
         const body = await req.json();
 
         if (process.env.LOG_API_REQUESTS === '1') {
