@@ -59,7 +59,8 @@ export default function Search() {
       });
 
       const songs: SongData[] = await response.json();
-      updateResult(songs)
+      const filteredSongs = removeOnlyYoutube(songs)
+      updateResult(filteredSongs)
     } catch (error) {
       console.error(String(error));
     }
@@ -79,9 +80,9 @@ export default function Search() {
     }
   }
 
-  function removeOnlyYoutube(songs: SongData[]) {
-    songs.filter((s) => {
-      !(
+  function removeOnlyYoutube(songs: SongData[]): SongData[] {
+    return songs.filter((s) => {
+      return !(
         s.extURLs.length === 1
         && s.extURLs[0]?.platform === Platforms.youtube
       )
