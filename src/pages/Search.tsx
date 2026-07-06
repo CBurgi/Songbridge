@@ -61,7 +61,7 @@ export default function Search() {
       const songs: SongData[] = await response.json();
       updateResult(songs)
     } catch (error) {
-      console.log(String(error));
+      console.error(String(error));
     }
   }
   async function getSong(songLink: string) {
@@ -75,7 +75,7 @@ export default function Search() {
       const songs: SongData[] = await response.json();
       updateResult(songs)
     } catch (error) {
-      console.log(String(error));
+      console.error(String(error));
     }
   }
 
