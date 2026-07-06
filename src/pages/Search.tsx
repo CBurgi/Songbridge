@@ -1,7 +1,7 @@
 import PlatformDisplay from "@/components/PlatformDisplay";
 import SearchBlock from "@/components/SearchBlock";
 import SongDisplay from "@/components/SongDisplay";
-import { EmptySongData, SongData, states } from "@/functions/objects";
+import { EmptySongData, Platforms, SongData, states } from "@/functions/objects";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -59,9 +59,10 @@ export default function Search() {
       });
 
       const songs: SongData[] = await response.json();
-      updateResult(songs)
+      const filteredSongs = removeOnlyYoutube(songs)
+      updateResult(filteredSongs)
     } catch (error) {
-      console.log(String(error));
+      console.error(String(error));
     }
   }
   async function getSong(songLink: string) {
@@ -75,9 +76,19 @@ export default function Search() {
       const songs: SongData[] = await response.json();
       updateResult(songs)
     } catch (error) {
-      console.log(String(error));
+      console.error(String(error));
     }
   }
+
+  function removeOnlyYoutube(songs: SongData[]): SongData[] {
+    return songs.filter((s) => {
+      return !(
+        s.extURLs.length === 1
+        && s.extURLs[0]?.platform === Platforms.youtube
+      )
+    })
+  }
+
   function updateResult(songs: SongData[]) {
     switch (songs.length) {
       case 0:
