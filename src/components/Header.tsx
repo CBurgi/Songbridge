@@ -43,7 +43,7 @@ export default function Header({page}: {page: string}) {
             </button>
           </div>
           <div id="hs-navbar" className=" hidden hs-collapse overflow-hidden transition-all duration-300 basis-full grow block " aria-labelledby="hs-navbar-collapse" role="region">
-            <div className=" flex gap-5 pt-2 flex-row items-center justify-center mt-0 ps-5 ">
+            <div className=" flex gap-3 pt-2 flex-row items-center justify-center mt-0 ps-3 ">
               <HsLink link={pages.search} pageName='Search' />
               <p className="text-stone-400">|</p>
               <HsLink link={pages.about} pageName='About' />

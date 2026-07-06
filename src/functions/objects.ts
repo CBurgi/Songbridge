@@ -40,23 +40,65 @@ export const Platforms: PlatformsObj = Object.freeze({
   spotify: "spotify",
   youtube: "youtube",
 })
-interface PlatformLinkObj {
+export interface PlatformLinkObj {
   platform: string;
   platformName: string;
   link: string;
+  supported: boolean;
+  extra_text: string;
 }
 export const PlatformLinks: PlatformLinkObj[] = [
   {
     platform: Platforms.spotify,
     platformName: "Spotify",
-    link: "https://open.spotify.com/"
+    link: "https://open.spotify.com/",
+    supported: true,
+    extra_text: '',
   },
   {
     platform: Platforms.youtube,
     platformName: "Youtube Music",
-    link: "https://music.youtube.com/"
+    link: "https://music.youtube.com/",
+    supported: true,
+    extra_text: '',
   },
-
+  {
+    platform: 'apple',
+    platformName: "Apple Music",
+    link: "https://music.apple.com/",
+    supported: false,
+    extra_text: 'Requires paid licence from Apple.',
+  },
+  {
+    platform: 'tidal',
+    platformName: "Tidal",
+    link: "https://tidal.com/",
+    supported: false,
+    extra_text: 'Coming soon...',
+  },
+  {
+    platform: 'amazon',
+    platformName: "Amazon Music",
+    link: "https://music.amazon.com/",
+    supported: false,
+    extra_text: 'Coming soon...',
+  },
+]
+export const ExternalPlatformLinks: PlatformLinkObj[] = [
+  {
+    platform: 'linkedin',
+    platformName: "LinkedIn",
+    link: "https://www.linkedin.com/in/cole-burgi/",
+    supported: true,
+    extra_text: '',
+  },
+  {
+    platform: 'github',
+    platformName: "GitHub",
+    link: "https://github.com/CBurgi",
+    supported: true,
+    extra_text: '',
+  },
 ]
 
 interface StatesObj {
