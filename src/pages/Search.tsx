@@ -28,7 +28,7 @@ export function parseSearchPath(searchPath: string): searchObj {
 }
 
 export default function Search() {
-  const baseLocation: string = location.origin
+  const baseLocation: string = (typeof process !== 'undefined' && process.env.BASE_URL) ? process.env.BASE_URL : location.origin
   const useLoc = useLocation()
   const navigate = useNavigate()
 
