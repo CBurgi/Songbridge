@@ -3,7 +3,6 @@ import { getToken } from "./tokenStore";
 
 export default abstract class AbstractApi {
   abstract platform: string;
-  abstract platformURL: string;
   abstract idRegex: RegExp;
   abstract apiURL: string;
 

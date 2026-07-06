@@ -8,7 +8,6 @@ const api = new YTMusic();
 export default class YouTubeApi extends AbstractApi {
   override platform = Platforms.youtube;
   override idRegex = /[\w\d]{11}/;
-  override platformURL = "youtube.com";
   override apiURL = "";
 
   musicSpecifcURL: string = "https://music.youtube.com/watch?v="

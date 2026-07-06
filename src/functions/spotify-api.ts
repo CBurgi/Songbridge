@@ -5,7 +5,6 @@ import { Platforms } from "./objects";
 export default class SpotifyApi extends AbstractApi {
   override platform = Platforms.spotify;
   override idRegex = /[\w\d]{22}/;
-  override platformURL = "open.spotify.com";
   override apiURL = "https://api.spotify.com";
 
   constructor(){super();}
