@@ -84,6 +84,22 @@ export const PlatformLinks: PlatformLinkObj[] = [
     extra_text: 'Coming soon...',
   },
 ]
+export const ExternalPlatformLinks: PlatformLinkObj[] = [
+  {
+    platform: 'linkedin',
+    platformName: "LinkedIn",
+    link: "https://www.linkedin.com/in/cole-burgi/",
+    supported: true,
+    extra_text: '',
+  },
+  {
+    platform: 'github',
+    platformName: "GitHub",
+    link: "https://github.com/CBurgi",
+    supported: true,
+    extra_text: '',
+  },
+]
 
 interface StatesObj {
   not_found: number;
