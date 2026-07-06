@@ -2,6 +2,7 @@ import PlatformDisplay from "@/components/PlatformDisplay";
 import SearchBlock from "@/components/SearchBlock";
 import SongDisplay from "@/components/SongDisplay";
 import { EmptySongData, SongData, states } from "@/functions/objects";
+import { constant } from "lodash";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -37,7 +38,8 @@ export default function Search() {
   const [songData, setSongData] = useState(EmptySongData);
 
   useEffect(() => {
-    const path = useLoc.pathname.slice(1)
+    const path = useLoc.pathname.slice(1) + useLoc.search
+    
     if (!path)
       setState(states.unsearched)
     else if (path.startsWith('search')) {
