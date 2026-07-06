@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun --hot src/index-dev.ts",
     "build": "bun build.ts",
-    "start": "bun build.ts && bun dist/index.js"
+    "start": "bun build.ts && bun dist/index.js",
+    "tailwindcss": "tailwindcss"
   },
   "dependencies": {
     "@preline/collapse": "^4.2.0",
@@ -22,7 +23,7 @@
     "react": "^19",
     "react-dom": "^19",
     "react-router-dom": "^7.15.1",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.2",
     "ytmusic-api": "https://github.com/CBurgi/ts-npm-ytmusic-api.git"
   },
   "devDependencies": {
