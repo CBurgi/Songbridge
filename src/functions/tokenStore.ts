@@ -45,8 +45,10 @@ export async function getToken(platform: string): Promise<string | boolean> {
   }
 
   await b.refreshing;
-  console.log(b.token);
-  
+  if (process.env.LOG_API_REQUESTS === '1') {
+    console.log(b.token);
+  }
+
   return b.token;
 }
 
@@ -66,10 +68,10 @@ async function refreshToken(platform: string): Promise<void> {
   const b = getBearer(platform);
   try {
     const reqBody = {
-        client_id: b.clientId,
-        client_secret: b.clientSecret,
-        grant_type: 'client_credentials'
-      }
+      client_id: b.clientId,
+      client_secret: b.clientSecret,
+      grant_type: 'client_credentials'
+    }
     const res = await fetch(b.tokenURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

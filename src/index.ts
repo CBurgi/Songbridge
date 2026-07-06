@@ -39,7 +39,7 @@ async function SearchSongs(
 
     return songs;
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return []
   }
 }
@@ -69,7 +69,7 @@ async function GetSongByURL(URL: string): Promise<SongData[] | []> {
 
     return [targetSong]
   } catch (error) {
-    console.log(error)
+    console.error(error)
     return []
   }
 }
@@ -104,13 +104,18 @@ const server = serve({
     "/api/searchSongs": {
       POST: async (req) => {
         const body = await req.json();
-        console.log('searchSongs request:')
-        console.log(body);
+
+        if (process.env.LOG_API_REQUESTS === '1') {
+          console.log('searchSongs request:')
+          console.log(body);
+        }
 
         const result = await SearchSongs(body.name, body.artists, body.album)
 
-        console.log('Response: ');
-        result.forEach((r) => console.log(r))
+        if (process.env.LOG_API_REQUESTS === '1') {
+          console.log('Response: ');
+          result.forEach((r) => console.log(r))
+        }
 
         return Response.json(result)
       },
@@ -118,13 +123,18 @@ const server = serve({
     "/api/getSong": {
       POST: async (req) => {
         const body = await req.json();
-        console.log('getSong request:')
-        console.log(body);
+
+        if (process.env.LOG_API_REQUESTS === '1') {
+          console.log('getSong request:')
+          console.log(body);
+        }
 
         const result = await GetSongByURL(body.url);
 
-        console.log('Response: ');
-        result.forEach((r) => console.log(r))
+        if (process.env.LOG_API_REQUESTS === '1') {
+          console.log('Response: ');
+          result.forEach((r) => console.log(r))
+        }
 
         return Response.json(result)
       },
