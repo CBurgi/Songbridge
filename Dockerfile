@@ -6,5 +6,5 @@ COPY . .
 RUN bun build.ts
 
 USER bun
-EXPOSE 3000/tcp
+EXPOSE 8080/tcp
 ENTRYPOINT [ "bun", "dist/index.js" ]
