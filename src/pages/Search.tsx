@@ -52,7 +52,7 @@ export default function Search() {
   }, [useLoc]);
 
   function sort_mostPlatforms(a: SongData, b: SongData): number {
-
+    return b.extURLs.length - a.extURLs.length
   }
   function sort_closeness(a: SongData, b: SongData): number {
     const search = parseSearchPath(path)
