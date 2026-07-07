@@ -17,7 +17,7 @@ export default function PlatformSupportedDisplay() {
                     <img
                       className={`size-16 shadow-xl rounded-lg ${p.supported ? '' : 'brightness-50'}`}
                       alt={`Logo for ${p.platformName}`}
-                      src={`/images/${p.platform}.png`} /
+                      src={`/images/${p.platform}.${p.imageType}`} /
                     >
                     <div className="flex flex-col min-w-0 w-full">
                       <ScrollText
