@@ -1,13 +1,13 @@
-import { SongData, PlatformLinks, PlatformLinkObj } from "@/functions/objects";
+import { SongData, PlatformLinks, PlatformLinkObj, ExternalPlatformLinks } from "@/functions/objects";
 import { classicNameResolver } from "typescript";
 import ScrollText from "./ScrollText";
 import { identity } from "lodash";
 
-export default function PlatformSupportedDisplay() {
+export default function ExternalPlatformDisplay() {
   return (
     <>
       {
-        PlatformLinks.map((p) => (
+        ExternalPlatformLinks.map((p) => (
           <a className="w-full" href={p.link} rel="external" key={self.crypto.randomUUID()}>
           <div className=" flex px-7 p-3">
             <div className="w-full flex border border-card-line shadow-2xs rounded-xl">
