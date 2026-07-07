@@ -67,7 +67,7 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platformName: "Apple Music",
     link: "https://music.apple.com/",
     supported: false,
-    extra_text: 'Requires paid licence from Apple.',
+    extra_text: 'Requires a paid licence from Apple.',
   },
   {
     platform: 'tidal',
