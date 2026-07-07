@@ -1,4 +1,4 @@
-import { SongData } from "@/functions/objects";
+import { PlatformLinks, SongData } from "@/functions/objects";
 import { classicNameResolver } from "typescript";
 import ScrollText from "./ScrollText";
 import { identity } from "lodash";
@@ -44,14 +44,16 @@ export default function SongDisplay({ song }: { song: SongData }) {
             </div>
             <span className="py-2 px-1 flex flex-row gap-2">
               {
-                song.extURLs.map((p) => {
-                  const platform = p.platform
+                song.extURLs.map((platform) => {
+                  const p = PlatformLinks.find((p) => {
+                    p.platform === platform.platform
+                  })
                   return (
                     <img
                       key={self.crypto.randomUUID()}
                       className="size-8 shadow-md rounded-sm"
-                      alt={`${platform} logo`}
-                      src={`/images/${platform}.png`}
+                      alt={`${p?.platform} logo`}
+                      src={`/images/${p?.platform}.${p?.imageType}`}
                     />
                   )
                 })

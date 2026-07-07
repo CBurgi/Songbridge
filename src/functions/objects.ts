@@ -32,6 +32,14 @@ export const EmptySongData: SongData = Object.freeze({
   isrc: "",
 })
 
+interface ImageTypesObj {
+  png: string;
+  svg: string;
+}
+export const ImageTypes: ImageTypesObj = Object.freeze({
+  png: "png",
+  svg: "svg",
+})
 interface PlatformsObj {
   spotify: string;
   youtube: string;
@@ -43,6 +51,7 @@ export const Platforms: PlatformsObj = Object.freeze({
 export interface PlatformLinkObj {
   platform: string;
   platformName: string;
+  imageType: string;
   link: string;
   supported: boolean;
   extra_text: string;
@@ -52,6 +61,7 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platform: Platforms.spotify,
     platformName: "Spotify",
     link: "https://open.spotify.com/",
+    imageType: ImageTypes.png,
     supported: true,
     extra_text: '',
   },
@@ -59,6 +69,7 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platform: Platforms.youtube,
     platformName: "Youtube Music",
     link: "https://music.youtube.com/",
+    imageType: ImageTypes.png,
     supported: true,
     extra_text: '',
   },
@@ -66,6 +77,7 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platform: 'apple',
     platformName: "Apple Music",
     link: "https://music.apple.com/",
+    imageType: ImageTypes.svg,
     supported: false,
     extra_text: 'Requires paid licence from Apple.',
   },
@@ -73,6 +85,7 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platform: 'tidal',
     platformName: "Tidal",
     link: "https://tidal.com/",
+    imageType: ImageTypes.png,
     supported: false,
     extra_text: 'Coming soon...',
   },
@@ -80,6 +93,7 @@ export const PlatformLinks: PlatformLinkObj[] = [
     platform: 'amazon',
     platformName: "Amazon Music",
     link: "https://music.amazon.com/",
+    imageType: ImageTypes.svg,
     supported: false,
     extra_text: 'Coming soon...',
   },
@@ -89,6 +103,7 @@ export const ExternalPlatformLinks: PlatformLinkObj[] = [
     platform: 'linkedin',
     platformName: "LinkedIn",
     link: "https://www.linkedin.com/in/cole-burgi/",
+    imageType: ImageTypes.png,
     supported: true,
     extra_text: '',
   },
@@ -96,6 +111,7 @@ export const ExternalPlatformLinks: PlatformLinkObj[] = [
     platform: 'github',
     platformName: "GitHub",
     link: "https://github.com/CBurgi",
+    imageType: ImageTypes.svg,
     supported: true,
     extra_text: '',
   },
